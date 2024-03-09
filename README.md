@@ -1,77 +1,66 @@
-# Navigating the Unknown
-In this project a perception stack for the DJI Tello EDU quadcopter is designed to enabe it to autonomously
-navigate through irregular, unknown-shaped windows. The primary goal is to identify and fly through the largest gap in a wall. The process begins by maneuvering the quadcopter to a position where the full gap is visible, followed by detecting the optical flow of the window. Subsequently, this flow data is postprocessed
-to outline the largest gap’s contour and pinpoint its center. With the center identified we employ visual servoing to guide the quadcopter to align its image center with the gap’s center, facilitating a successful flight through the gap.
-
-(Check the full problem statements here [project 4](https://rbe549.github.io/rbe595/fall2023/proj/p4/))
-
-
+# Mini Drone Race – The Perception Saga!
+- In this project, a perception stack for DJI Tello EDU quadcopter was developed to enable precise navigation through multiple windows, whose texture and approximate dimensions are known.
+- To achieve this, simulation-to-reality (sim2real) techniques (such as domain randomization) were used to generate synthetic data from blender, creating a robust training set images and labels for the neural network model.
+- YOLOv8 was the chosen architecture model and it was trained to identify and segment the front window from a complex environment of multiple windows.
+- Once the segmentation mask was detected, the corners were extracted and a Perspective-n-Point (PnP) algorithm is applied to calculate the relative pose of the front window which is essential for guiding the quadcopter through the windows safely.\
+(Check the full problem statements here [project3a](https://rbe549.github.io/rbe595/fall2023/proj/p3a/) and [project3b](https://rbe549.github.io/rbe595/fall2023/proj/p3b/))
 ## Steps to run the code
-- Install Numpy, OpenCV, djitellopy, torch, cudatoolkit, matplotlib libraries before running the code.
-- Install all the library dependencies mentioned [here](https://github.com/princeton-vl/RAFT)
-- Turn the drone on and connect to it.
-- To run the main code run the `main.py` file after installing all dependancies. This will save the final output in `repository` folder itself.
-- In repository folder:
-  ```bash
-  python3 main.py --model=RAFT/models/raft-sintel.pth
-  ```
-- In our testing we found the weights for sintel dataset are giving better results. Try other weights if you want to by changing the weight file accordingly.
+- Install Numpy, Scipy, Matplotlib, blender python, pyquaternion, djitellopy, OpenCv, Ultralytics libraries before running the code.
+- Data generation:
+  - If you want to use the dataset we generated, download it from this [link](https://drive.google.com/file/d/1vpTFZ2e7NAu6Ufwol3CPBNRqSzk6DJaQ/view?usp=sharing) (NOTE: size is nearly 4GB).
+-  Training:
+    - To train the YOLOv8 model run the `window_seg_yolov8.ipynb` file in `YOLO Model` folder and before doing that add the location to your dataset appropriately.
+    - You can also use the already trained weights that gave an inference time of 33ms on Orin nano. The weights file `last.pt` is in `YOLO Model` folder. 
+- Camera Calibration: Use the code in `Calibration` folder to get the camera intrinsics and distortion coefficients.
+- To fly the drone (no need to do any of the above steps for doing this step):
+	- Set up the tello drone and NVIDIA Jetson Orin nano
+   	- On orin nano clone this repository
+   	- Open the `fly_tello.py` file.
+   	- Connect to the network of the tello drone and run in `repo` folder the following command:
+   	  ```
+	    python3 fly_tello.py
+	    ```
 
 ## Report
 For detailed description see the report [here](Report.pdf).
-
 ## Plots and Animations
-### Blender simulation
-Testing the flow detection in blender simulation:
-
-Case 1:
+### Data generated:
+A sample set of images and labels generated from blender:
 <p float="middle">
-	<img src="media/test1.gif" width="250" height="250" title="frames"/> 
-	<img src="media/processed_flow/test1h_frame000.png" width="250" height="250" title="flow"/>
-	<img src="media/processed_frame/test1h_frame000.png" width="250" height="250" title="real frame"/>
+<img src="media/synthdata.png" width="400" height="180" />
 </p>
 
-Case 2:
+### Data Augmentation pipeline:
+The generated images are augmented using the following pipeline to create more diverse data.
 <p float="middle">
-	<img src="media/test2.gif" width="250" height="250" title="frames"/> 
-	<img src="media/processed_flow/test2h_frame000.png" width="250" height="250" title="flow"/>
-	<img src="media/processed_frame/test2h_frame000.png" width="250" height="250" title="real frame"/>
+<img src="media/data_augment.png" width="590" height="220" />
 </p>
 
-### Real world run
-Gaussian splat of the real window in the lab:
+### Camera Calibration:
+After proper camera calibration on the checkerboard.
 <p float="middle">
-	<img src="media/gausssplat_gif.gif" width="375" height="200" />
+<img src="media/calib.png" width="300" height="220"/>
 </p>
 
-Live demo runs:
-
-Watch the good quality video of demo run 1 on the real tello drone here ([link1](https://youtu.be/wt_jdC7YsPk) and [link2](https://youtu.be/kCroe-EPg3U)).
-
+### Results:
+The network prediction masks, corner inference, and pose estimated for a sample set of frames.
 <p float="middle">
-	<img src="media/output3.gif" width="350" height="350" title="Drone POV"/> 
-	<img src="media/output3dronepov.gif" width="350" height="350" title="Cameraman POV"/>
+	<img src="media/corners.png" width="350" height="250" title="Front view"/> 
+	<img src="media/pnp.png" width="350" height="250" title="Side View"/>
 </p>
 
-Watch the good quality video of demo run 2 on the real tello drone here ([link1](https://youtu.be/JmVFpYKcHsI) and [link2](https://youtu.be/AGB9YBB8y6k)).
-
+### Deployment on the real drone:
+Watch the test run on the real tello drone here ([link1](https://youtu.be/WQvOlGGIvAI) and [link2](https://youtu.be/lSRwmYc5FLc)).
 <p float="middle">
-	<img src="media/output4.gif" width="350" height="350" title="Drone POV"/> 
-	<img src="media/output4dronepov.gif" width="350" height="350" title="Cameraman POV"/>
+	<img src="media/VideoVisualization.gif" width="350" height="350" title="Drone POV"/> 
+	<img src="media/VideoRun.gif" width="350" height="350" title="Cameraman POV"/>
 </p>
 
-
-## References
-1. [https://github.com/princeton-vl/RAFT](https://github.com/princeton-vl/RAFT)
 
 ## Collaborators
-Ankit Talele - amtalele@wpi.edu
-
 Chaitanya Sriram Gaddipati - cgaddipati@wpi.edu
 
 Shiva Surya Lolla - slolla@wpi.edu
 
+Ankit Talele - amtalele@wpi.edu
 
-
-
-  
