@@ -7,7 +7,6 @@
 ## Steps to run the code
 - Install Numpy, Scipy, Matplotlib, blender python, pyquaternion, djitellopy, OpenCv, Ultralytics libraries before running the code.
 - Data generation:
-  - If you want to use the dataset we generated, download it from this [link](https://drive.google.com/file/d/1vpTFZ2e7NAu6Ufwol3CPBNRqSzk6DJaQ/view?usp=sharing) (NOTE: size is nearly 4GB).
 -  Training:
     - To train the YOLOv8 model run the `window_seg_yolov8.ipynb` file in `YOLO Model` folder and before doing that add the location to your dataset appropriately.
     - You can also use the already trained weights that gave an inference time of 33ms on Orin nano. The weights file `last.pt` is in `YOLO Model` folder. 
@@ -21,8 +20,7 @@
 	    python3 fly_tello.py
 	    ```
 
-## Report
-For detailed description see the report [here](Report.pdf).
+
 ## Plots and Animations
 ### Data generated:
 A sample set of images and labels generated from blender:
@@ -50,17 +48,10 @@ The network prediction masks, corner inference, and pose estimated for a sample 
 </p>
 
 ### Deployment on the real drone:
-Watch the test run on the real tello drone here ([link1](https://youtu.be/WQvOlGGIvAI) and [link2](https://youtu.be/lSRwmYc5FLc)).
 <p float="middle">
 	<img src="media/VideoVisualization.gif" width="350" height="350" title="Drone POV"/> 
 	<img src="media/VideoRun.gif" width="350" height="350" title="Cameraman POV"/>
 </p>
 
 
-## Collaborators
-Chaitanya Sriram Gaddipati - cgaddipati@wpi.edu
-
-Shiva Surya Lolla - slolla@wpi.edu
-
-Ankit Talele - amtalele@wpi.edu
 
