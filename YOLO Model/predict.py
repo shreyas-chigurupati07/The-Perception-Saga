@@ -3,9 +3,9 @@ from ultralytics import YOLO
 import cv2
 
 
-model_path = '/home/ankit/Downloads/The-Perception-Saga/YOLO Model/runs/segment/train2/weights/last.pt'
+model_path = '/home/shreyas/Downloads/The-Perception-Saga/YOLO Model/runs/segment/train2/weights/last.pt'
 
-image_path = '/home/ankit/Downloads/washburn pics/8.png'
+image_path = '/home/shreyas/Downloads/washburn pics/8.png'
 
 img = cv2.imread(image_path)
 H, W, _ = img.shape
